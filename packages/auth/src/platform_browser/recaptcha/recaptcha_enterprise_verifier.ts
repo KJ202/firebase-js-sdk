@@ -25,6 +25,7 @@ import {
   RecaptchaAuthProvider,
   EnforcementState
 } from '../../api';
+import { appendParams } from 'safevalues';
 
 import { Auth } from '../../model/public_types';
 import { AuthInternal } from '../../model/auth';
@@ -141,12 +142,12 @@ export class RecaptchaEnterpriseVerifier {
               );
               return;
             }
-            let url = jsHelpers._recaptchaEnterpriseScriptUrl();
-            if (url.length !== 0) {
-              url += siteKey;
-            }
+            const url = jsHelpers._recaptchaEnterpriseScriptUrl();
+            // Append site key as query parameter.
+            const urlWithParams = appendParams(url, new Map([['render', siteKey]]));
+
             jsHelpers
-              ._loadJS(url)
+              ._loadJS(urlWithParams)
               .then(() => {
                 retrieveRecaptchaToken(siteKey, resolve, reject);
               })

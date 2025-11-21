@@ -15,40 +15,51 @@
  * limitations under the License.
  */
 
+import { TrustedResourceUrl } from 'safevalues';
+
 interface ExternalJSProvider {
-  loadJS(url: string): Promise<Event>;
-  recaptchaV2Script: string;
-  recaptchaEnterpriseScript: string;
-  gapiScript: string;
+  loadJS(url: TrustedResourceUrl): Promise<Event>;
+  recaptchaV2Script: TrustedResourceUrl;
+  recaptchaEnterpriseScript: TrustedResourceUrl;
+  gapiScript: TrustedResourceUrl;
 }
 
-let externalJSProvider: ExternalJSProvider = {
-  async loadJS() {
-    throw new Error('Unable to load external scripts');
-  },
-
-  recaptchaV2Script: '',
-  recaptchaEnterpriseScript: '',
-  gapiScript: ''
-};
+// externalJSProvider is set in index.ts
+let externalJSProvider: ExternalJSProvider;
 
 export function _setExternalJSProvider(p: ExternalJSProvider): void {
   externalJSProvider = p;
 }
 
-export function _loadJS(url: string): Promise<Event> {
+export function _loadJS(url: TrustedResourceUrl): Promise<Event> {
+  // externalJSProvider is not defined during initialization.
+  if (!externalJSProvider) {
+    throw new Error('ExternalJSProvider not set.');
+  }
   return externalJSProvider.loadJS(url);
 }
 
-export function _recaptchaV2ScriptUrl(): string {
+export function _recaptchaV2ScriptUrl(): TrustedResourceUrl {
+  // externalJSProvider is not defined during initialization.
+  if (!externalJSProvider) {
+    throw new Error('ExternalJSProvider not set.');
+  }
   return externalJSProvider.recaptchaV2Script;
 }
 
-export function _recaptchaEnterpriseScriptUrl(): string {
+export function _recaptchaEnterpriseScriptUrl(): TrustedResourceUrl {
+  // externalJSProvider is not defined during initialization.
+  if (!externalJSProvider) {
+    throw new Error('ExternalJSProvider not set.');
+  }
   return externalJSProvider.recaptchaEnterpriseScript;
 }
 
-export function _gapiScriptUrl(): string {
+export function _gapiScriptUrl(): TrustedResourceUrl {
+  // externalJSProvider is not defined during initialization.
+  if (!externalJSProvider) {
+    throw new Error('ExternalJSProvider not set.');
+  }
   return externalJSProvider.gapiScript;
 }
 

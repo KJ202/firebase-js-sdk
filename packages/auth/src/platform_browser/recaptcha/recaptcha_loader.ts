@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { querystring } from '@firebase/util';
+import { appendParams } from 'safevalues';
 
 import { AuthErrorCode } from '../../core/errors';
 import { _assert, _createError } from '../../core/util/assert';
@@ -90,11 +90,11 @@ export class ReCaptchaLoaderImpl implements ReCaptchaLoader {
         resolve(recaptcha);
       };
 
-      const url = `${jsHelpers._recaptchaV2ScriptUrl()}?${querystring({
+      const url = appendParams(jsHelpers._recaptchaV2ScriptUrl(), {
         onload: _JSLOAD_CALLBACK,
         render: 'explicit',
         hl
-      })}`;
+      });
 
       jsHelpers._loadJS(url).catch(() => {
         clearTimeout(networkTimeout);
